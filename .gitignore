@@ -1,0 +1,21 @@
+# Ignore dependencies installed via npm/yarn
+node_modules/
+
+# Ignore environment variables files (contains sensitive data)
+.env
+.env.production
+
+# Ignore compiled TypeScript files
+dist/
+
+# Ignore test files
+test.js
+
+# Ignore flowchart diagrams or related files
+flowcharts/
+
+# Ignore Prettier configuration file (if you want to exclude it)
+.prettierrc
+
+# Tgnore logs Folder 
+logs/
