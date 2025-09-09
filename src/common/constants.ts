@@ -14,7 +14,7 @@ export const SWAGGER_OPTIONS = {
     ],
     components: {
       securitySchemes: {
-        bearerAuth: {
+        BearerAuth: {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT'
@@ -23,7 +23,7 @@ export const SWAGGER_OPTIONS = {
     },
     security: [
       {
-        bearerAuth: []
+        BearerAuth: []
       }
     ]
   },
@@ -52,6 +52,8 @@ export class ErrorConstants {
   static readonly ERROR_DUPLICATE_ENTRY = 3201;
   static readonly ERROR_DATABASE_CONNECTION = 3202;
   static readonly ERROR_USER_DATA_NOT_FOUND = 3203;
+  static readonly ERROR_STORE_NOT_FOUND = 3204; // Added this missing constant
+  static readonly ERROR_NOT_FOUND = 3205; // Added this missing constant
 
   // Email Errors (3300-3399)
   static readonly ERROR_EMAIL_SEND_FAILED = 3300;
