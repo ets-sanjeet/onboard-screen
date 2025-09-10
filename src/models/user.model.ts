@@ -1,7 +1,7 @@
 
 import { CallbackError, model, Schema } from "mongoose";
-import { IUser } from "../interfaces/user.interface";
-import { UserRole } from "../enums/user.enums";
+import { IUser } from "../common/interfaces/user.interface";
+import { UserRole } from "../common/enums/user.enums";
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema<IUser>(

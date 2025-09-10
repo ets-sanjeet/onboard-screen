@@ -57,6 +57,7 @@ export class UserValidation {
         .required(),
       is_onboarding_complete: Joi.boolean().required(),
       instagram_Connected: Joi.boolean().required(),
+
     }),
   };
 

@@ -163,6 +163,7 @@ router.post("/register", userControllerInstance.register);
  *         content:
  *           application/json:
  *             schema:
+ * 
  *               type: object
  *               properties:
  *                 message:
@@ -237,7 +238,7 @@ router.post("/login", userControllerInstance.login);
  *                   type: string
  *                   example: "User with email abcd27@gmail.com not found."
  *       500:
- *         description: Internal server error.
+ *         descripti-on: Internal server error.
  *         content:
  *           application/json:
  *             schema:
