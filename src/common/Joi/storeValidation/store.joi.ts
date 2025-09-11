@@ -15,6 +15,18 @@ export class StoreValidation {
       state: Joi.string().min(1).required(),
       pincode: Joi.string().regex(/^\d{6}$/).required(),
     }),
+
+    // Add the missing updateStoreSchema here
+    updateStoreSchema: Joi.object({
+      store_name: Joi.string().min(1).max(100).optional(),
+      store_type: Joi.string().optional(),
+      email_id: Joi.string().email().optional(),
+      manager_email_id: Joi.string().email().optional(),
+      address: Joi.string().min(5).optional(),
+      city: Joi.string().min(1).optional(),
+      state: Joi.string().min(1).optional(),
+      pincode: Joi.string().regex(/^\d{6}$/).optional(),
+    }).min(1), // .min(1) ensures at least one field is provided for the update
   };
 
   private formatJoiErrors(errorDetails: ValidationErrorItem[]) {
