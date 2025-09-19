@@ -30,6 +30,7 @@ const storeControllerInstance = new StoreController();
  *               - city
  *               - state
  *               - pincode
+ *               - country
  *             properties:
  *               store_name:
  *                 type: string
@@ -55,6 +56,9 @@ const storeControllerInstance = new StoreController();
  *               pincode:
  *                 type: string
  *                 example: "12345"
+ *               country:
+ *                 type: string
+ *                 example: "India"
  *     responses:
  *       201:
  *         description: Store has been successfully added.
@@ -136,6 +140,9 @@ router.get("/", authenticate, storeControllerInstance.getStores);
  *               pincode:
  *                 type: string
  *                 example: "54321"
+ *               country:
+ *                 type: string
+ *                 example: "India"
  *     responses:
  *       200:
  *         description: Store updated successfully.
