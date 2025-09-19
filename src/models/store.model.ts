@@ -1,6 +1,5 @@
 import { model, Schema, Document } from "mongoose";
 
-
 export interface IStore extends Document {
   user_id: Schema.Types.ObjectId;
   store_name: string;
@@ -11,6 +10,7 @@ export interface IStore extends Document {
   city: string;
   state: string;
   pincode: string;
+  country: string;
 }
 
 const storeSchema = new Schema<IStore>(
@@ -56,6 +56,11 @@ const storeSchema = new Schema<IStore>(
       trim: true,
     },
     pincode: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    country: {
       type: String,
       required: true,
       trim: true,

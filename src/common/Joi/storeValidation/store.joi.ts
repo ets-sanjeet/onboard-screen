@@ -14,6 +14,7 @@ export class StoreValidation {
       city: Joi.string().min(1).required(),
       state: Joi.string().min(1).required(),
       pincode: Joi.string().regex(/^\d{6}$/).required(),
+      country: Joi.string().min(1).required(),
     }),
 
     // Add the missing updateStoreSchema here
@@ -26,6 +27,7 @@ export class StoreValidation {
       city: Joi.string().min(1).optional(),
       state: Joi.string().min(1).optional(),
       pincode: Joi.string().regex(/^\d{6}$/).optional(),
+      country: Joi.string().min(1).optional(),
     }).min(1), // .min(1) ensures at least one field is provided for the update
   };
 
