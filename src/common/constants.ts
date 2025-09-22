@@ -54,6 +54,7 @@ export class ErrorConstants {
   static readonly ERROR_USER_DATA_NOT_FOUND = 3203;
   static readonly ERROR_STORE_NOT_FOUND = 3204; // Added this missing constant
   static readonly ERROR_NOT_FOUND = 3205; // Added this missing constant
+   static readonly ERROR_OFFER_NOT_FOUND = 3206; // Added this constant
 
   // Email Errors (3300-3399)
   static readonly ERROR_EMAIL_SEND_FAILED = 3300;
