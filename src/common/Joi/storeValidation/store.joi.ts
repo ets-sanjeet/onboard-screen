@@ -17,7 +17,7 @@ export class StoreValidation {
       country: Joi.string().min(1).required(),
     }),
 
-    // Add the missing updateStoreSchema here
+
     updateStoreSchema: Joi.object({
       store_name: Joi.string().min(1).max(100).optional(),
       store_type: Joi.string().optional(),
@@ -28,7 +28,7 @@ export class StoreValidation {
       state: Joi.string().min(1).optional(),
       pincode: Joi.string().regex(/^\d{6}$/).optional(),
       country: Joi.string().min(1).optional(),
-    }).min(1), // .min(1) ensures at least one field is provided for the update
+    }).min(1), 
   };
 
   private formatJoiErrors(errorDetails: ValidationErrorItem[]) {
