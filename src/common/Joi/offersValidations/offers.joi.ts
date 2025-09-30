@@ -8,7 +8,9 @@ export class OfferValidation {
     addOfferSchema: Joi.object({
       store: Joi.string().required(),
       location: Joi.string().trim().required(),
-      offerType: Joi.string().valid("Day Offers", "Offers By Value", "BOGO").required(),
+      offerType: Joi.string()
+        .valid("Day Offers", "Offers By Value", "BOGO")
+        .required(),
       offerTitle: Joi.string().trim().required(),
       offerDescription: Joi.string().trim().required(),
       startDate: Joi.date().iso().required(),
@@ -26,7 +28,9 @@ export class OfferValidation {
     updateOfferSchema: Joi.object({
       store: Joi.string().optional(),
       location: Joi.string().trim().optional(),
-      offerType: Joi.string().valid("Day Offers", "Offers By Value", "BOGO").optional(),
+      offerType: Joi.string()
+        .valid("Day Offers", "Offers By Value", "BOGO")
+        .optional(),
       offerTitle: Joi.string().trim().optional(),
       offerDescription: Joi.string().trim().optional(),
       startDate: Joi.date().iso().optional(),
