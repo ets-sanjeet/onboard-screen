@@ -1,9 +1,55 @@
 import express from "express";
 import { OfferController } from "../controllers/offers.controller";
 import { authenticate } from "../../src/common/jwt/onBoardAuth";
+import multer from "multer"; // 👈 ADDED: Import Multer
 
 const router = express.Router();
 const offerControllerInstance = new OfferController();
+
+
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+});
+
+
+
+/**
+ * @swagger
+ * /api/v1/offers/image/{fileId}:
+ *   get:
+ *     summary: Retrieve an offer image by its file ID
+ *     description: Streams the image file content directly from GridFS storage using the file ID stored in the offer model. This endpoint does NOT require authentication.
+ *     tags: [Offers]
+ *     parameters:
+ *       - in: path
+ *         name: fileId
+ *         required: true
+ *         description: The MongoDB GridFS file ID (string) of the image.
+ *         schema:
+ *           type: string
+ *           example: "60c72b2f9b1d8c1e4c7d0e83"
+ *     responses:
+ *       200:
+ *         description: Image successfully streamed. Content-Type will be image/jpeg, image/png, etc.
+ *         content:
+ *           image/*:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Invalid file ID format.
+ *       404:
+ *         description: Image not found.
+ *       500:
+ *         description: Error streaming file.
+ */
+router.get("/image/:fileId", offerControllerInstance.getImage);
+
+
 
 /**
  * @swagger
@@ -86,7 +132,7 @@ const offerControllerInstance = new OfferController();
  *           type: array
  *           items:
  *             type: string
- *           description: A list of image URLs for the offer.
+ *           description: A list of image URLs (or file IDs) for the offer.
  *           nullable: true
  *         audience:
  *           type: string
@@ -122,9 +168,30 @@ const offerControllerInstance = new OfferController();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Offer'
+ *             type: object
+ *             properties:
+ *               store: { type: string, description: "The ID of the store.", example: "60c72b2f9b1d8c1e4c7d0e82" }
+ *               location: { type: string, example: "New York" }
+ *               offerType: { type: string, enum: [Day Offers, Offers By Value, BOGO], example: "Offers By Value" }
+ *               offerTitle: { type: string, example: "Get 20% off on all items" }
+ *               offerDescription: { type: string, example: "A limited-time offer for all customers." }
+ *               startDate: { type: string, format: "date-time", example: "2023-10-27T00:00:00.000Z" }
+ *               endDate: { type: string, format: "date-time", example: "2023-11-27T00:00:00.000Z" }
+ *               discountPercentage: { type: number, example: 20 }
+ *               minSpendAmount: { type: number, example: 50 }
+ *               couponCode: { type: string, example: "FALL2023" }
+ *               selectOfferStatus: { type: string, example: "Active" }
+ *               applicableProducts: { type: string, example: "All products" }
+ *               audience: { type: string, example: "Public" }
+ *               offerStatus: { type: string, example: "Published" }
+ *               offerImages:
+ *                 type: array
+ *                 description: Array of image files for the offer (max 5).
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       201:
  *         description: Offer has been successfully added.
@@ -148,7 +215,12 @@ const offerControllerInstance = new OfferController();
  *       500:
  *         description: Internal server error.
  */
-router.post("/", authenticate, offerControllerInstance.addOffer);
+router.post(
+  "/",
+  authenticate,
+  upload.array("offerImages", 5), // 👈 Multer middleware for file uploads
+  offerControllerInstance.addOffer
+);
 
 /**
  * @swagger
@@ -195,49 +267,27 @@ router.get("/", authenticate, offerControllerInstance.getOffers);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               location:
- *                 type: string
- *                 example: "Los Angeles"
- *               offerType:
- *                 type: string
- *                 enum: [Day Offers, Offers By Value, BOGO]
- *                 example: "Day Offers"
- *               offerTitle:
- *                 type: string
- *                 example: "New Offer: 30% Off!"
- *               offerDescription:
- *                 type: string
- *                 example: "Updated offer description."
- *               discountPercentage:
- *                 type: number
- *                 example: 30
- *               minSpendAmount:
- *                 type: number
- *                 example: 75
- *               couponCode:
- *                 type: string
- *                 example: "SUMMER2024"
- *               selectOfferStatus:
- *                 type: string
- *                 example: "Inactive"
- *               applicableProducts:
- *                 type: string
- *                 example: "Specific products only"
+ *               location: { type: string, example: "Los Angeles" }
+ *               offerType: { type: string, enum: [Day Offers, Offers By Value, BOGO], example: "Day Offers" }
+ *               offerTitle: { type: string, example: "New Offer: 30% Off!" }
+ *               offerDescription: { type: string, example: "Updated offer description." }
+ *               discountPercentage: { type: number, example: 30 }
+ *               minSpendAmount: { type: number, example: 75 }
+ *               couponCode: { type: string, example: "SUMMER2024" }
+ *               selectOfferStatus: { type: string, example: "Inactive" }
+ *               applicableProducts: { type: string, example: "Specific products only" }
+ *               audience: { type: string, example: "Private" }
+ *               offerStatus: { type: string, example: "Draft" }
  *               offerImages:
  *                 type: array
+ *                 description: Array of image files for the offer (max 5). Replaces existing images.
  *                 items:
  *                   type: string
- *               audience:
- *                 type: string
- *                 enum: [Public, Private]
- *                 example: "Private"
- *               offerStatus:
- *                 type: string
- *                 example: "Draft"
+ *                   format: binary
  *     responses:
  *       200:
  *         description: Offer updated successfully.
@@ -254,7 +304,12 @@ router.get("/", authenticate, offerControllerInstance.getOffers);
  *       500:
  *         description: Internal server error.
  */
-router.put("/:offer_id", authenticate, offerControllerInstance.updateOffer);
+router.put(
+  "/:offer_id",
+  authenticate,
+  upload.array("offerImages", 5),
+  offerControllerInstance.updateOffer
+);
 
 /**
  * @swagger
@@ -286,4 +341,3 @@ router.put("/:offer_id", authenticate, offerControllerInstance.updateOffer);
 router.delete("/:offer_id", authenticate, offerControllerInstance.deleteOffer);
 
 module.exports = router;
-
